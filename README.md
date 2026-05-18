@@ -53,14 +53,14 @@ E-Thrift Store is a dark-themed, full-stack e-commerce application where users c
 
 ## Screenshots
 
-<img src="screenshots/homepage.png" width="49%" alt="Homepage" />
-<img src="screenshots/products.png" width="49%" alt="Products" />
-<img src="screenshots/product-detail.png" width="49%" alt="Product Detail" />
-<img src="screenshots/cart.png" width="49%" alt="Cart" />
-<img src="screenshots/login.png" width="49%" alt="Login" />
-<img src="screenshots/signup.png" width="49%" alt="Sign Up" />
-<img src="screenshots/donate.png" width="49%" alt="Donate" />
-<img src="screenshots/mobile.png" width="49%" alt="Mobile" />
+<img src="Screenshots/homepage.png" width="49%" alt="Homepage" />
+<img src="Screenshots/products.png" width="49%" alt="Products" />
+<img src="Screenshots/product-detail.png" width="49%" alt="Product Detail" />
+<img src="Screenshots/cart.png" width="49%" alt="Cart" />
+<img src="Screenshots/login.png" width="49%" alt="Login" />
+<img src="Screenshots/signup.png" width="49%" alt="Sign Up" />
+<img src="Screenshots/donate.png" width="49%" alt="Donate" />
+<img src="Screenshots/mobile.png" width="49%" alt="Mobile" />
 
 ---
 
