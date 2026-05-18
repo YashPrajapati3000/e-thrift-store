@@ -5,6 +5,10 @@ import { Resend } from 'resend'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
+function escHtml(str: string) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const CONDITION_LABEL: Record<ItemCondition, string> = {
@@ -61,25 +65,25 @@ export async function POST(req: Request) {
             </div>
 
             <h2 style="color:white;margin:0 0 8px;">Thank you for your donation!</h2>
-            <p style="color:#737373;margin:0 0 24px;">Hi ${donorName.trim()}, your item has been submitted to the community. Here's a summary of what you shared:</p>
+            <p style="color:#737373;margin:0 0 24px;">Hi ${escHtml(donorName.trim())}, your item has been submitted to the community. Here's a summary of what you shared:</p>
 
             <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
               <tr>
                 <td style="padding:10px 14px;background:#171717;border:1px solid #262626;border-radius:0;color:#a3a3a3;font-size:13px;width:36%;">Item</td>
-                <td style="padding:10px 14px;background:#171717;border:1px solid #262626;color:white;font-size:13px;">${itemName.trim()}</td>
+                <td style="padding:10px 14px;background:#171717;border:1px solid #262626;color:white;font-size:13px;">${escHtml(itemName.trim())}</td>
               </tr>
               <tr>
                 <td style="padding:10px 14px;background:#0d0d0d;border:1px solid #262626;color:#a3a3a3;font-size:13px;">Condition</td>
-                <td style="padding:10px 14px;background:#0d0d0d;border:1px solid #262626;color:white;font-size:13px;">${CONDITION_LABEL[condition as ItemCondition]}</td>
+                <td style="padding:10px 14px;background:#0d0d0d;border:1px solid #262626;color:white;font-size:13px;">${escHtml(CONDITION_LABEL[condition as ItemCondition])}</td>
               </tr>
               <tr>
                 <td style="padding:10px 14px;background:#171717;border:1px solid #262626;color:#a3a3a3;font-size:13px;vertical-align:top;">Description</td>
-                <td style="padding:10px 14px;background:#171717;border:1px solid #262626;color:white;font-size:13px;">${itemDescription.trim()}</td>
+                <td style="padding:10px 14px;background:#171717;border:1px solid #262626;color:white;font-size:13px;">${escHtml(itemDescription.trim())}</td>
               </tr>
               ${message?.trim() ? `
               <tr>
                 <td style="padding:10px 14px;background:#0d0d0d;border:1px solid #262626;color:#a3a3a3;font-size:13px;vertical-align:top;">Your message</td>
-                <td style="padding:10px 14px;background:#0d0d0d;border:1px solid #262626;color:white;font-size:13px;">${message.trim()}</td>
+                <td style="padding:10px 14px;background:#0d0d0d;border:1px solid #262626;color:white;font-size:13px;">${escHtml(message.trim())}</td>
               </tr>` : ''}
             </table>
 

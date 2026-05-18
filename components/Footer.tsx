@@ -58,7 +58,7 @@ export default function Footer() {
                 'Tailwind CSS',
                 'Prisma + PostgreSQL',
                 'NextAuth.js',
-                'FakeStoreAPI',
+                'DummyJSON',
               ].map((tech) => (
                 <li key={tech} className="text-sm text-neutral-500">{tech}</li>
               ))}
@@ -70,12 +70,12 @@ export default function Footer() {
           <p className="text-xs text-neutral-600">
             © {new Date().getFullYear()} E-Thrift Store · Product data by{' '}
             <a
-              href="https://fakestoreapi.com"
+              href="https://dummyjson.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-neutral-500 hover:text-green-400 transition-colors"
             >
-              FakeStoreAPI
+              DummyJSON
             </a>
           </p>
           <p className="text-xs text-neutral-600">Portfolio project — not a real store</p>

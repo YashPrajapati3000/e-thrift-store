@@ -3,6 +3,10 @@ import crypto from 'crypto'
 import { Resend } from 'resend'
 import { prisma } from '@/lib/prisma'
 
+function escHtml(str: string) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 export const dynamic = 'force-dynamic'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -46,8 +50,8 @@ export async function POST(req: Request) {
           <span style="font-weight:700;font-size:14px;color:white;">E·Thrift<span style="color:#4ade80;">Store</span></span>
         </div>
         <h2 style="color:white;margin:0 0 8px;">Reset your password</h2>
-        <p style="color:#737373;margin:0 0 24px;">Hi ${user.name}, we received a request to reset your password.</p>
-        <a href="${resetUrl}" style="display:inline-block;background:#22c55e;color:black;font-weight:700;padding:14px 28px;border-radius:10px;text-decoration:none;font-size:15px;">Reset Password</a>
+        <p style="color:#737373;margin:0 0 24px;">Hi ${escHtml(user.name)}, we received a request to reset your password.</p>
+        <a href="${escHtml(resetUrl)}" style="display:inline-block;background:#22c55e;color:black;font-weight:700;padding:14px 28px;border-radius:10px;text-decoration:none;font-size:15px;">Reset Password</a>
         <p style="color:#525252;font-size:13px;margin:24px 0 0;">This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email.</p>
       </div>
     `,

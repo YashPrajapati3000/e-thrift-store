@@ -46,6 +46,23 @@ export async function POST(req: Request) {
   const { items }: { items: CartItemPayload[] } = await req.json()
   const userId = session.user.id
 
+  if (!Array.isArray(items) || items.length > 100) {
+    return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 })
+  }
+
+  for (const item of items) {
+    if (
+      typeof item.id !== 'number' ||
+      typeof item.price !== 'number' || item.price < 0 ||
+      typeof item.quantity !== 'number' || !Number.isInteger(item.quantity) || item.quantity < 1 ||
+      typeof item.title !== 'string' || item.title.length > 500 ||
+      typeof item.image !== 'string' || item.image.length > 1000 ||
+      typeof item.category !== 'string' || item.category.length > 100
+    ) {
+      return NextResponse.json({ error: 'Invalid cart item' }, { status: 400 })
+    }
+  }
+
   // Full replace inside a transaction so the cart is never left in a partial state
   await prisma.$transaction(async (tx) => {
     await tx.savedCartItem.deleteMany({ where: { userId } })
