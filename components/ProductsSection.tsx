@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { RefreshCw } from 'lucide-react'
 import ProductGrid from './ProductGrid'
+import ScrollReveal from './ScrollReveal'
 
 interface Product {
   id: number
@@ -79,7 +80,7 @@ export default async function ProductsSection() {
             </div>
             <h2 className="text-xl font-bold text-white mb-3">Couldn&apos;t load products</h2>
             <p className="text-sm text-neutral-500 mb-8 max-w-sm">
-              FakeStoreAPI couldn&apos;t be reached. This is likely a temporary issue — try refreshing the page.
+              The product API couldn&apos;t be reached. This is likely a temporary issue — try refreshing the page.
             </p>
             <Link
               href="/"
@@ -99,35 +100,37 @@ export default async function ProductsSection() {
   return (
     <>
       {/* Stats bar */}
-      <div className="bg-neutral-900/60 border-y border-neutral-800">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-neutral-800 text-center">
-            <div className="px-4 py-2">
-              <div className="text-2xl font-bold text-white">{products.length}+</div>
-              <div className="text-[11px] text-neutral-500 mt-1 uppercase tracking-widest">Items Listed</div>
-            </div>
-            <div className="px-4 py-2">
-              <div className="text-2xl font-bold text-white">100%</div>
-              <div className="text-[11px] text-neutral-500 mt-1 uppercase tracking-widest">Community</div>
-            </div>
-            <div className="px-4 py-2">
-              <div className="text-2xl font-bold text-white">Free</div>
-              <div className="text-[11px] text-neutral-500 mt-1 uppercase tracking-widest">To List</div>
-            </div>
-            <div className="px-4 py-2">
-              <div className="text-2xl font-bold text-white">{categories.length - 1}</div>
-              <div className="text-[11px] text-neutral-500 mt-1 uppercase tracking-widest">Categories</div>
+      <ScrollReveal>
+        <div className="bg-neutral-900/60 border-y border-neutral-800">
+          <div className="max-w-4xl mx-auto px-4 py-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-neutral-800 text-center">
+              <ScrollReveal delay={0} className="px-4 py-2">
+                <div className="text-2xl font-bold text-white">{products.length}+</div>
+                <div className="text-[11px] text-neutral-500 mt-1 uppercase tracking-widest">Items Listed</div>
+              </ScrollReveal>
+              <ScrollReveal delay={80} className="px-4 py-2">
+                <div className="text-2xl font-bold text-white">100%</div>
+                <div className="text-[11px] text-neutral-500 mt-1 uppercase tracking-widest">Community</div>
+              </ScrollReveal>
+              <ScrollReveal delay={160} className="px-4 py-2">
+                <div className="text-2xl font-bold text-white">Free</div>
+                <div className="text-[11px] text-neutral-500 mt-1 uppercase tracking-widest">To List</div>
+              </ScrollReveal>
+              <ScrollReveal delay={240} className="px-4 py-2">
+                <div className="text-2xl font-bold text-white">{categories.length - 1}</div>
+                <div className="text-[11px] text-neutral-500 mt-1 uppercase tracking-widest">Categories</div>
+              </ScrollReveal>
             </div>
           </div>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Products grid */}
       <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="flex items-baseline justify-between mb-8">
+        <ScrollReveal className="flex items-baseline justify-between mb-8">
           <h2 className="text-2xl font-bold text-white tracking-tight">Browse Items</h2>
           <span className="text-sm text-neutral-600 hidden sm:block">Updated hourly</span>
-        </div>
+        </ScrollReveal>
         <ProductGrid products={products} categories={categories} />
       </section>
     </>

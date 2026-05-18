@@ -28,15 +28,18 @@ function StarRating({ rate }: { rate: number }) {
   )
 }
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const categoryLabel = product.category
-    .split(' ')
+    .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ')
 
   return (
-    <div className="group bg-neutral-900 border border-neutral-800 hover:border-neutral-700 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/60">
-
+    <Link
+      href={`/products/${product.id}`}
+      className="group bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1.5 hover:border-green-500/25 hover:shadow-[0_8px_40px_rgba(34,197,94,0.08)] animate-fade-in-up"
+      style={{ animationDelay: `${Math.min(index, 7) * 65}ms` }}
+    >
       {/* Image area */}
       <div className="relative h-52 bg-neutral-800 overflow-hidden">
         <Image
@@ -55,7 +58,7 @@ export default function ProductCard({ product }: { product: Product }) {
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
         {/* Title */}
-        <h3 className="text-sm font-medium text-neutral-200 line-clamp-2 mb-3 leading-snug flex-1">
+        <h3 className="text-sm font-medium text-neutral-200 line-clamp-2 mb-3 leading-snug flex-1 group-hover:text-white transition-colors duration-200">
           {product.title}
         </h3>
 
@@ -65,19 +68,16 @@ export default function ProductCard({ product }: { product: Product }) {
           <span className="text-xs text-neutral-600">({product.rating.count})</span>
         </div>
 
-        {/* Price + CTA */}
+        {/* Price + hint */}
         <div className="flex items-center justify-between gap-2 pt-3 border-t border-neutral-800">
           <span className="text-xl font-bold text-white tracking-tight">
             ${product.price.toFixed(2)}
           </span>
-          <Link
-            href={`/products/${product.id}`}
-            className="flex-shrink-0 text-xs font-bold bg-green-500 text-black px-4 py-2 rounded-lg hover:bg-green-400 active:scale-95 transition-all duration-150 shadow-sm shadow-green-500/20"
-          >
-            View Details
-          </Link>
+          <span className="text-xs font-medium text-neutral-600 group-hover:text-green-400 transition-colors duration-300">
+            View details →
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

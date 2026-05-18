@@ -27,7 +27,7 @@ export default function ProductGrid({ products, categories }: ProductGridProps) 
   const labelFor = (cat: string) => {
     if (cat === 'all') return 'All Items'
     return cat
-      .split(' ')
+      .split('-')
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ')
   }
@@ -40,7 +40,7 @@ export default function ProductGrid({ products, categories }: ProductGridProps) 
           <button
             key={cat}
             onClick={() => setActive(cat)}
-            className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all duration-150 ${
+            className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
               active === cat
                 ? 'bg-green-500 text-black font-semibold shadow-sm shadow-green-500/25'
                 : 'bg-transparent text-neutral-400 border border-neutral-700 hover:border-green-500/50 hover:text-green-400'
@@ -56,10 +56,10 @@ export default function ProductGrid({ products, categories }: ProductGridProps) 
         {filtered.length} {filtered.length === 1 ? 'item' : 'items'} found
       </p>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        {filtered.map((product) => (
-          <ProductCard key={product.id} product={product} />
+      {/* Grid — key on `active` so cards re-animate on category change */}
+      <div key={active} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {filtered.map((product, i) => (
+          <ProductCard key={product.id} product={product} index={i} />
         ))}
       </div>
     </div>

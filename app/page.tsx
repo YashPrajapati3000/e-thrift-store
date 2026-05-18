@@ -22,8 +22,13 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(34,197,94,0.13),transparent)]" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-green-500/60 to-transparent" />
 
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24 text-center animate-fade-in-up">
-          <div className="inline-flex items-center gap-3 mb-8">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24 text-center">
+
+          {/* Label — first to appear */}
+          <div
+            className="inline-flex items-center gap-3 mb-8 animate-fade-in-up"
+            style={{ animationDelay: '0ms' }}
+          >
             <span className="w-6 h-px bg-green-500/60" />
             <span className="text-green-400 text-sm font-medium tracking-widest uppercase">
               Sustainable Community Shopping
@@ -31,18 +36,30 @@ export default function Home() {
             <span className="w-6 h-px bg-green-500/60" />
           </div>
 
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-[1.05] tracking-tight">
+          {/* Headline */}
+          <h1
+            className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-[1.05] tracking-tight animate-fade-in-up"
+            style={{ animationDelay: '100ms' }}
+          >
             Give Old Things
             <br />
             <span className="text-green-400">a New Life</span>
           </h1>
 
-          <p className="text-neutral-400 text-lg sm:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+          {/* Subtext */}
+          <p
+            className="text-neutral-400 text-lg sm:text-xl mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up"
+            style={{ animationDelay: '200ms' }}
+          >
             Browse quality second-hand items donated by your community — or give
             something you no longer need a fresh start.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* CTAs */}
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up"
+            style={{ animationDelay: '300ms' }}
+          >
             <Link
               href="/donate"
               className="w-full sm:w-auto bg-green-500 text-black font-bold px-8 py-3.5 rounded-xl hover:bg-green-400 transition-colors text-base shadow-lg shadow-green-500/20"

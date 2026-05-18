@@ -57,10 +57,10 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-7">
-            <Link href="/" className="text-sm font-medium text-neutral-400 hover:text-white transition-colors">
+            <Link href="/" className="nav-link text-sm font-medium text-neutral-400 hover:text-white transition-colors">
               Browse
             </Link>
-            <Link href="/donate" className="text-sm font-medium text-neutral-400 hover:text-white transition-colors">
+            <Link href="/donate" className="nav-link text-sm font-medium text-neutral-400 hover:text-white transition-colors">
               Donate an Item
             </Link>
           </div>
