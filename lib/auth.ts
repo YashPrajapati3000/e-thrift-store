@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
         const valid = await bcrypt.compare(credentials.password, user.hashedPassword)
         if (!valid) return null
 
-        return { id: user.id, name: user.name, email: user.email, createdAt: user.createdAt.toISOString() }
+        return { id: user.id, name: user.name, email: user.email }
       },
     }),
   ],
@@ -38,7 +38,11 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.createdAt = user.createdAt
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { createdAt: true },
+        })
+        token.createdAt = dbUser?.createdAt.toISOString() ?? ''
       }
       return token
     },
