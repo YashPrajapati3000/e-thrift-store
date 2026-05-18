@@ -17,13 +17,36 @@ interface Product {
   rating: { rate: number; count: number }
 }
 
+interface DJsonProduct {
+  id: number
+  title: string
+  price: number
+  description: string
+  category: string
+  thumbnail: string
+  rating: number
+  reviews?: unknown[]
+}
+
+function mapProduct(p: DJsonProduct): Product {
+  return {
+    id: p.id,
+    title: p.title,
+    price: p.price,
+    description: p.description,
+    category: p.category,
+    image: p.thumbnail,
+    rating: { rate: p.rating, count: Array.isArray(p.reviews) ? p.reviews.length : 0 },
+  }
+}
+
 async function getProduct(id: number): Promise<Product | null> {
   try {
-    const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-      next: { revalidate: 3600 },
+    const res = await fetch(`https://dummyjson.com/products/${id}`, {
+      cache: 'no-store',
     })
     if (!res.ok) return null
-    return res.json()
+    return mapProduct(await res.json())
   } catch {
     return null
   }
@@ -32,12 +55,15 @@ async function getProduct(id: number): Promise<Product | null> {
 async function getRelated(category: string, excludeId: number): Promise<Product[]> {
   try {
     const encoded = encodeURIComponent(category)
-    const res = await fetch(`https://fakestoreapi.com/products/category/${encoded}`, {
-      next: { revalidate: 3600 },
+    const res = await fetch(`https://dummyjson.com/products/category/${encoded}`, {
+      cache: 'no-store',
     })
     if (!res.ok) return []
-    const all: Product[] = await res.json()
-    return all.filter((p) => p.id !== excludeId).slice(0, 4)
+    const data = await res.json()
+    return (data.products as DJsonProduct[])
+      .filter((p) => p.id !== excludeId)
+      .slice(0, 4)
+      .map(mapProduct)
   } catch {
     return []
   }

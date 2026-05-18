@@ -12,12 +12,36 @@ interface Product {
   rating: { rate: number; count: number }
 }
 
+interface DJsonProduct {
+  id: number
+  title: string
+  price: number
+  description: string
+  category: string
+  thumbnail: string
+  rating: number
+  reviews?: unknown[]
+}
+
+function mapProduct(p: DJsonProduct): Product {
+  return {
+    id: p.id,
+    title: p.title,
+    price: p.price,
+    description: p.description,
+    category: p.category,
+    image: p.thumbnail,
+    rating: { rate: p.rating, count: Array.isArray(p.reviews) ? p.reviews.length : 0 },
+  }
+}
+
 async function fetchProducts(): Promise<Product[]> {
-  const res = await fetch('https://fakestoreapi.com/products', {
+  const res = await fetch('https://dummyjson.com/products?limit=30', {
     cache: 'no-store',
   })
-  if (!res.ok) throw new Error('FakeStoreAPI unavailable')
-  return res.json()
+  if (!res.ok) throw new Error('API unavailable')
+  const data = await res.json()
+  return (data.products as DJsonProduct[]).map(mapProduct)
 }
 
 export default async function ProductsSection() {

@@ -44,6 +44,15 @@ export const authOptions: NextAuthOptions = {
         })
         token.createdAt = dbUser?.createdAt.toISOString() ?? ''
       }
+      // Backfill id for sessions minted before this field was added
+      if (!token.id && token.sub) {
+        token.id = token.sub
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.sub },
+          select: { createdAt: true },
+        })
+        token.createdAt = dbUser?.createdAt.toISOString() ?? ''
+      }
       return token
     },
     async session({ session, token }) {
