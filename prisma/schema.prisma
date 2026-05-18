@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ItemCondition {
+  New
+  LikeNew
+  Good
+  Fair
+}
+
+model User {
+  id             String          @id @default(cuid())
+  name           String          @db.VarChar(100)
+  email          String          @unique @db.VarChar(254)
+  hashedPassword String          @db.Char(60)
+  createdAt      DateTime        @default(now())
+  donations      Donation[]
+  savedCart      SavedCartItem[]
+}
+
+model SavedCartItem {
+  id        String   @id @default(cuid())
+  productId Int
+  title     String   @db.VarChar(255)
+  price     Decimal  @db.Decimal(10, 2)
+  image     String   @db.Text
+  category  String   @db.VarChar(100)
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Donation {
+  id              String        @id @default(cuid())
+  donorName       String        @db.VarChar(100)
+  email           String        @db.VarChar(254)
+  itemName        String        @db.VarChar(200)
+  itemDescription String        @db.Text
+  condition       ItemCondition
+  message         String?       @db.Text
+  createdAt       DateTime      @default(now())
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id])
+}
