@@ -9,7 +9,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql)](https://neon.tech/)
 [![NextAuth](https://img.shields.io/badge/NextAuth.js-4-purple)](https://next-auth.js.org/)
 
-**Live Demo:** _Coming soon (Vercel deployment)_
+**Live Demo:** https://e-thrift-store.vercel.app
 
 ---
 
@@ -44,19 +44,21 @@ E-Thrift Store is a dark-themed, full-stack e-commerce application where users c
 | Database | PostgreSQL via [Neon.tech](https://neon.tech) (serverless) |
 | ORM | Prisma 5 |
 | Auth | NextAuth.js v4 (Credentials provider, JWT strategy) |
+| Email | [Resend](https://resend.com) (password reset + donation confirmation) |
 | Icons | Lucide React |
-| Product data | [FakeStoreAPI](https://fakestoreapi.com) |
-| Deployment | Vercel (planned) |
+| Product data | [DummyJSON](https://dummyjson.com) |
+| Deployment | Vercel |
 
 ---
 
 ## Screenshots
 
-> _Screenshots coming after Vercel deployment._
-
-| Homepage | Product Detail | Cart |
-|---|---|---|
-| _placeholder_ | _placeholder_ | _placeholder_ |
+<img src="screenshots/homepage.png" width="49%" alt="Homepage" />
+<img src="screenshots/product-detail.png" width="49%" alt="Product Detail" />
+<img src="screenshots/cart.png" width="49%" alt="Cart" />
+<img src="screenshots/login.png" width="49%" alt="Login" />
+<img src="screenshots/donate.png" width="49%" alt="Donate" />
+<img src="screenshots/mobile.png" width="49%" alt="Mobile" />
 
 ---
 
@@ -65,12 +67,13 @@ E-Thrift Store is a dark-themed, full-stack e-commerce application where users c
 ### Prerequisites
 - Node.js 18+
 - A PostgreSQL database (free tier on [Neon.tech](https://neon.tech) works)
+- A [Resend](https://resend.com) API key (free tier) for email features
 
 ### Steps
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-username/e-thrift-store.git
+git clone https://github.com/YashPrajapati3000/e-thrift-store.git
 cd e-thrift-store
 
 # 2. Install dependencies
@@ -78,7 +81,7 @@ npm install
 
 # 3. Set up environment variables
 cp .env.example .env
-# Fill in DATABASE_URL, NEXTAUTH_URL, NEXTAUTH_SECRET
+# Fill in DATABASE_URL, NEXTAUTH_URL, NEXTAUTH_SECRET, RESEND_API_KEY
 
 # 4. Push the schema to your database
 npx prisma db push
@@ -95,7 +98,10 @@ Open [http://localhost:3000](http://localhost:3000).
 DATABASE_URL="postgresql://..."        # Neon (or any PostgreSQL) connection string
 NEXTAUTH_URL="http://localhost:3000"   # Base URL of the app
 NEXTAUTH_SECRET="..."                  # Random secret (openssl rand -base64 32)
+RESEND_API_KEY="re_..."                # Get a free API key from resend.com
 ```
+
+> **Note on Resend:** Without a verified custom domain, Resend can only deliver emails to your own registered Resend account email. To enable password reset and donation confirmation emails for all users, verify your domain on [resend.com](https://resend.com) and update the `from` address in `app/api/donate/route.ts` and `app/api/auth/forgot-password/route.ts`.
 
 ---
 
@@ -135,6 +141,13 @@ Donation
   message         Text?
   createdAt       DateTime
   userId          String?       → User
+
+PasswordResetToken
+  id        String    CUID, PK
+  token     Char(64)  unique, crypto.randomBytes(32).toString('hex')
+  expiresAt DateTime  1-hour TTL
+  createdAt DateTime
+  userId    String    → User (cascade delete)
 ```
 
 ---
@@ -151,12 +164,16 @@ app/
   icon.tsx               Favicon generator (next/og)
   login/                 Login page + metadata layout
   signup/                Signup page + metadata layout
+  forgot-password/       Forgot password page + metadata layout
+  reset-password/        Reset password page + metadata layout
   donate/                Donation form + metadata layout
   cart/                  Cart page + metadata layout
   profile/               Profile page + metadata layout
   products/[id]/         Dynamic product detail page
   api/
     auth/[...nextauth]/  NextAuth handler
+    auth/forgot-password/ Password reset token generation + Resend email
+    auth/reset-password/  Token validation + password update
     signup/              Registration endpoint
     donate/              Donation submission endpoint
     cart/                Cart GET + POST (full-replace sync)
@@ -164,10 +181,11 @@ app/
 components/
   Navbar.tsx             Sticky navbar with cart badge and user dropdown
   Footer.tsx             Shared footer with navigation and tech credits
-  ProductCard.tsx        Product grid card
-  ProductGrid.tsx        Category-filtered product grid
+  ProductCard.tsx        Product grid card (fully clickable Link)
+  ProductGrid.tsx        Category-filtered product grid with stagger animations
   ProductsSection.tsx    Async server component (fetches + renders stats + grid)
   ProductsLoadingSkeleton.tsx  Shimmer skeleton for product section
+  ScrollReveal.tsx       IntersectionObserver scroll-triggered fade-in component
   CartSessionSync.tsx    Bridge: watches session, loads DB cart on login, syncs on change
   AuthProvider.tsx       NextAuth SessionProvider wrapper
 
@@ -183,22 +201,30 @@ middleware.ts            Protects /donate and /profile routes
 
 ---
 
-## What I Learned
+## Why I Built This
 
-- **Next.js App Router architecture** — Server vs. Client component boundaries, when each is appropriate, and how to pass data between them without over-fetching
-- **React Suspense for streaming** — Isolating async data fetching inside a Suspense boundary so the hero renders immediately while products stream in
-- **NextAuth.js with Credentials** — JWT strategy, session callbacks, `getServerSession` in API routes, and the subtle differences between client and server session access
-- **Prisma with PostgreSQL** — Schema design, relations, `@@unique` constraints, transactions, and the `prisma db push` workflow for iterative schema changes
-- **Context architecture in App Router** — Why provider order matters, and how to bridge client-only context with session state using a bridge component (`CartSessionSync`)
-- **Full-stack cart design** — Debounced DB sync, preventing the "empty cart wipes the database on login" race condition using a `syncEnabled` flag, clearing localStorage synchronously before navigation
-- **Debug-first thinking** — Diagnosing subtle auth redirect issues (`router.push` inside Suspense cancelled by SessionProvider re-renders → fixed with `window.location.href`)
+I originally built a version of this app in **2022** during my bachelor's degree — plain HTML, CSS, JavaScript, Bootstrap and MongoDB. No AI tools existed at the time; everything was built through manual research and Stack Overflow.
+
+In **2026** I rebuilt it completely from scratch using **Claude Code** as part of completing Anthropic's [Claude Code in Action](https://www.anthropic.com) course. The goal was to experience firsthand how AI-assisted development changes what one developer can build alone.
+
+Claude Code understood the entire old codebase without me explaining a single file. That moment changed how I think about AI in development workflows.
+
+---
+
+## Limitations
+
+- Product data is sourced from [DummyJSON](https://dummyjson.com) — no real inventory management
+- No real payment processing — checkout is a placeholder
+- Email notifications are limited to the registered Resend account email without custom domain verification
+- No admin dashboard for managing donations
 
 ---
 
 ## Acknowledgements
 
-- [FakeStoreAPI](https://fakestoreapi.com) — Free REST API providing realistic product data
+- [DummyJSON](https://dummyjson.com) — Free REST API providing realistic product data
 - [Neon.tech](https://neon.tech) — Serverless PostgreSQL with a generous free tier
+- [Resend](https://resend.com) — Simple email API for transactional emails
 - [Lucide React](https://lucide.dev) — Clean, consistent icon library
 - [Tailwind CSS](https://tailwindcss.com) — Utility-first CSS that made the dark theme fast to build
 - [shadcn/ui](https://ui.shadcn.com) — Design reference for the neutral/green colour palette
