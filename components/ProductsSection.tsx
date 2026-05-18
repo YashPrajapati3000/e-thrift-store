@@ -14,7 +14,7 @@ interface Product {
 
 async function fetchProducts(): Promise<Product[]> {
   const res = await fetch('https://fakestoreapi.com/products', {
-    next: { revalidate: 3600 },
+    cache: 'no-store',
   })
   if (!res.ok) throw new Error('FakeStoreAPI unavailable')
   return res.json()
