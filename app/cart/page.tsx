@@ -41,7 +41,7 @@ function EmptyCart() {
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, hydrated } = useCart()
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   const [checkoutClicked, setCheckoutClicked] = useState(false)
 
