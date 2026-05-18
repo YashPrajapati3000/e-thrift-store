@@ -35,13 +35,23 @@ function mapProduct(p: DJsonProduct): Product {
   }
 }
 
+const THRIFT_CATEGORIES = new Set([
+  'furniture', 'home-decoration', 'kitchen-accessories',
+  'laptops', 'smartphones', 'tablets',
+  'mens-shirts', 'mens-shoes', 'mens-watches',
+  'tops', 'womens-bags', 'womens-dresses', 'womens-jewellery', 'womens-shoes', 'womens-watches',
+  'sunglasses', 'sports-accessories',
+])
+
 async function fetchProducts(): Promise<Product[]> {
-  const res = await fetch('https://dummyjson.com/products?limit=30', {
+  const res = await fetch('https://dummyjson.com/products?limit=100', {
     cache: 'no-store',
   })
   if (!res.ok) throw new Error('API unavailable')
   const data = await res.json()
-  return (data.products as DJsonProduct[]).map(mapProduct)
+  return (data.products as DJsonProduct[])
+    .filter((p) => THRIFT_CATEGORIES.has(p.category))
+    .map(mapProduct)
 }
 
 export default async function ProductsSection() {

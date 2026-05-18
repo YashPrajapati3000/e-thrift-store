@@ -40,13 +40,23 @@ function mapProduct(p: DJsonProduct): Product {
   }
 }
 
+const THRIFT_CATEGORIES = new Set([
+  'furniture', 'home-decoration', 'kitchen-accessories',
+  'laptops', 'smartphones', 'tablets',
+  'mens-shirts', 'mens-shoes', 'mens-watches',
+  'tops', 'womens-bags', 'womens-dresses', 'womens-jewellery', 'womens-shoes', 'womens-watches',
+  'sunglasses', 'sports-accessories',
+])
+
 async function getProduct(id: number): Promise<Product | null> {
   try {
     const res = await fetch(`https://dummyjson.com/products/${id}`, {
       cache: 'no-store',
     })
     if (!res.ok) return null
-    return mapProduct(await res.json())
+    const product = mapProduct(await res.json())
+    if (!THRIFT_CATEGORIES.has(product.category)) return null
+    return product
   } catch {
     return null
   }
